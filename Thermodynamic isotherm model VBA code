@@ -1,0 +1,173 @@
+Sub assignment()
+
+'Defined the primary variables
+R = Cells(5, 4)
+V = Cells(6, 4)
+Tc = Cells(7, 4)
+Pc = Cells(8, 4)
+w = Cells(9, 4)
+
+'Defined each temperature of isotherm
+    T1 = Cells(8, 7)
+    T2 = Cells(9, 7)
+    T3 = Cells(10, 7)
+    T4 = Cells(11, 7)
+    T5 = Cells(12, 7)
+
+'Defined function of b and Omega
+    Cells(10, 4) = b(R, Tc, Pc)
+    Cells(11, 4) = W1(w)
+    
+'Defined function of all variables which vary with temperature
+        Cells(8, 8) = Tr1(T1, Tc)
+        Cells(9, 8) = Tr2(T2, Tc)
+        Cells(10, 8) = Tr3(T3, Tc)
+        Cells(11, 8) = Tr4(T4, Tc)
+        Cells(12, 8) = Tr5(T5, Tc)
+        
+            Cells(8, 9) = a11(Cells(11, 4), w, Cells(8, 8), T1, Tc)
+            Cells(9, 9) = a12(Cells(11, 4), w, Cells(9, 8), T2, Tc)
+            Cells(10, 9) = a13(Cells(11, 4), w, Cells(10, 8), T3, Tc)
+            Cells(11, 9) = a14(Cells(11, 4), w, Cells(11, 8), T4, Tc)
+            Cells(12, 9) = a15(Cells(11, 4), w, Cells(12, 8), T5, Tc)
+            
+                Cells(8, 10) = a1(R, Tc, Pc, Cells(11, 4), w, Cells(8, 8), T1, Cells(8, 9))
+                Cells(9, 10) = a2(R, Tc, Pc, Cells(11, 4), w, Cells(9, 8), T2, Cells(9, 9))
+                Cells(10, 10) = a3(R, Tc, Pc, Cells(11, 4), w, Cells(10, 8), T3, Cells(10, 9))
+                Cells(11, 10) = a4(R, Tc, Pc, Cells(11, 4), w, Cells(11, 8), T4, Cells(11, 9))
+                Cells(12, 10) = a5(R, Tc, Pc, Cells(11, 4), w, Cells(12, 8), T5, Cells(12, 9))
+                
+                        Cells(8, 11) = P1(R, T1, Cells(8, 8), V, Cells(10, 4), Tc, Pc, Cells(8, 10), Cells(11, 4), w, Cells(8, 9))
+                        Cells(9, 11) = P2(R, T2, Cells(9, 8), V, Cells(10, 4), Tc, Pc, Cells(9, 10), Cells(11, 4), w, Cells(9, 9))
+                        Cells(10, 11) = P3(R, T3, Cells(10, 8), V, Cells(10, 4), Tc, Pc, Cells(10, 10), Cells(11, 4), w, Cells(10, 9))
+                        Cells(11, 11) = P4(R, T4, Cells(11, 8), V, Cells(10, 4), Tc, Pc, Cells(11, 10), Cells(11, 4), w, Cells(11, 9))
+                        Cells(12, 11) = P5(R, T5, Cells(12, 8), V, Cells(10, 4), Tc, Pc, Cells(12, 10), Cells(11, 4), w, Cells(12, 9))
+        
+        
+'Setting the Step change of volume to be able to plot each point
+        Vlow = Cells(23, 4)
+         Vhigh = Cells(24, 4)
+        Nsteps = Cells(25, 4)
+        VStepsize = (Vhigh - Vlow) / (Nsteps - 1)
+        
+'Creating a table of values for each of the 5 isotherms
+        For i = 0 To Nsteps - 1
+         V = Vlow + i * VStepsize
+         Cells(7 + i, 16) = V
+         isotherm1 = P1(R, T1, Cells(8, 8), V, Cells(10, 4), Tc, Pc, Cells(8, 10), Cells(11, 4), w, Cells(8, 9))
+         Cells(7 + i, 17) = isotherm1
+        Next i
+        
+        For i = 0 To Nsteps - 1
+         V = Vlow + i * VStepsize
+         Cells(7 + i, 18) = V
+         isotherm2 = P2(R, T2, Cells(9, 8), V, Cells(10, 4), Tc, Pc, Cells(9, 10), Cells(11, 4), w, Cells(9, 9))
+         Cells(7 + i, 19) = isotherm2
+        Next i
+        
+        For i = 0 To Nsteps - 1
+         V = Vlow + i * VStepsize
+         Cells(7 + i, 20) = V
+         isotherm3 = P3(R, T3, Cells(10, 8), V, Cells(10, 4), Tc, Pc, Cells(10, 10), Cells(11, 4), w, Cells(10, 9))
+         Cells(7 + i, 21) = isotherm3
+        Next i
+        
+        For i = 0 To Nsteps - 1
+         V = Vlow + i * VStepsize
+         Cells(7 + i, 22) = V
+         isotherm4 = P4(R, T4, Cells(11, 8), V, Cells(10, 4), Tc, Pc, Cells(11, 10), Cells(11, 4), w, Cells(11, 9))
+         Cells(7 + i, 23) = isotherm4
+        Next i
+        
+        For i = 0 To Nsteps - 1
+         V = Vlow + i * VStepsize
+         Cells(7 + i, 24) = V
+         isotherm5 = P5(R, T5, Cells(12, 8), V, Cells(10, 4), Tc, Pc, Cells(12, 10), Cells(11, 4), w, Cells(12, 9))
+         Cells(7 + i, 25) = isotherm5
+        Next i
+
+End Sub
+
+'Carrying out the function to find b and Omega
+Function b(R, Tc, Pc)
+b = (0.0778) * ((R * Tc) / Pc)
+
+End Function
+Function W1(w)
+W1 = 0.37464 + ((1.54226) * (w)) - (0.26992 * ((w) ^ 2))
+
+End Function
+
+
+
+'Carrying out equation to find reduced temperatures of each temperature
+Function Tr1(T1, Tc)
+Tr1 = T1 / Tc
+End Function
+Function Tr2(T2, Tc)
+Tr2 = T2 / Tc
+End Function
+Function Tr3(T3, Tc)
+Tr3 = T3 / Tc
+End Function
+Function Tr4(T4, Tc)
+Tr4 = T4 / Tc
+End Function
+Function Tr5(T5, Tc)
+Tr5 = T5 / Tc
+End Function
+
+
+
+'Carrying out equations to find alpha values of each temperature
+Function a11(W1, w, Tr1, T1, Tc)
+a11 = (1 + (W1 * (1 - ((Tr1) ^ 0.5)))) ^ 2
+End Function
+Function a12(W1, w, Tr2, T2, Tc)
+a12 = (1 + (W1 * (1 - ((Tr2) ^ 0.5)))) ^ 2
+End Function
+Function a13(W1, w, Tr3, T3, Tc)
+a13 = (1 + (W1 * (1 - ((Tr3) ^ 0.5)))) ^ 2
+End Function
+Function a14(W1, w, Tr4, T4, Tc)
+a14 = (1 + (W1 * (1 - ((Tr4) ^ 0.5)))) ^ 2
+End Function
+Function a15(W1, w, Tr5, T5, Tc)
+a15 = (1 + (W1 * (1 - ((Tr5) ^ 0.5)))) ^ 2
+End Function
+
+
+'Carrying out equations to find a values for each temperature
+Function a1(R, Tc, Pc, W1, w, Tr1, T1, a11)
+a1 = (((0.45724) * ((R) ^ 2) * ((Tc) ^ 2) * (a11)) / Pc)
+End Function
+Function a2(R, Tc, Pc, W1, w, Tr2, T2, a12)
+a2 = (((0.45724) * ((R) ^ 2) * ((Tc) ^ 2) * (a12)) / Pc)
+End Function
+Function a3(R, Tc, Pc, W1, w, Tr3, T3, a13)
+a3 = (((0.45724) * ((R) ^ 2) * ((Tc) ^ 2) * (a13)) / Pc)
+End Function
+Function a4(R, Tc, Pc, W1, w, Tr4, T4, a14)
+a4 = (((0.45724) * ((R) ^ 2) * ((Tc) ^ 2) * (a14)) / Pc)
+End Function
+Function a5(R, Tc, Pc, W1, w, Tr5, T5, a15)
+a5 = (((0.45724) * ((R) ^ 2) * ((Tc) ^ 2) * (a15)) / Pc)
+End Function
+
+
+'Carrying out equations to find pressure for each temperature
+Function P1(R, T1, Tr1, V, b, Tc, Pc, a1, W1, w, a11)
+P1 = ((R * T1) / (V - b)) - ((a1 * a11) / ((V * V) + (2 * b * V) - (b * b)))
+End Function
+Function P2(R, T2, Tr2, V, b, Tc, Pc, a2, W1, w, a12)
+P2 = ((R * T2) / (V - b)) - ((a2 * a12) / (((V) ^ 2) + (2 * V * b) - ((b) ^ 2)))
+End Function
+Function P3(R, T3, Tr3, V, b, Tc, Pc, a3, W1, w, a13)
+P3 = ((R * T3) / (V - b)) - ((a3 * a13) / (((V) ^ 2) + (2 * V * b) - ((b) ^ 2)))
+End Function
+Function P4(R, T4, Tr4, V, b, Tc, Pc, a4, W1, w, a14)
+P4 = ((R * T4) / (V - b)) - ((a4 * a14) / (((V) ^ 2) + (2 * V * b) - ((b) ^ 2)))
+End Function
+Function P5(R, T5, Tr5, V, b, Tc, Pc, a5, W1, w, a15)
+P5 = ((R * T5) / (V - b)) - ((a5 * a15) / (((V) ^ 2) + (2 * V * b) - ((b) ^ 2)))
+End Function
